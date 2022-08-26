@@ -1,13 +1,24 @@
 package damex.com.damex.model;
 
+import javax.persistence.*;
 import java.util.Date;
-
+@Entity
+@Table(name="ordenes")
 public class Orden {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String numero;
     private Date fechaCreacion;
     private Date fechaRecibida;
     private double total;
+    @ManyToOne
+    private Usuario usuario;
+
+    @OneToOne(mappedBy = "orden")
+    private DetalleOrden detalleOrden;
+
+
     public Orden(){}
 
     public Orden(int id, String numero, Date fechaCreacion, Date fechaRecibida, double total) {
@@ -57,6 +68,22 @@ public class Orden {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public DetalleOrden getDetalleOrden() {
+        return detalleOrden;
+    }
+
+    public void setDetalleOrden(DetalleOrden detalleOrden) {
+        this.detalleOrden = detalleOrden;
     }
 
     @Override

@@ -17,6 +17,8 @@ public class Usuario {
     private String password;
     @OneToMany(mappedBy = "usuario")
     private List<Producto> productos;
+    @OneToMany(mappedBy = "usuario")
+    private List<Orden> ordenes;
 
     @Override
     public String toString() {
