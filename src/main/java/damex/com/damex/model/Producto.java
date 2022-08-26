@@ -1,12 +1,20 @@
 package damex.com.damex.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name ="productos")
 public class Producto {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String nombre;
     private String descripcion;
     private String imagen;
     private double precio;
     private int cantidad;
+    @ManyToOne
+    private Usuario usuario;
 
     @Override
     public String toString() {
@@ -22,13 +30,15 @@ public class Producto {
 
     //Constructors
     public Producto(){}
-    public Producto(int id, String nombre, String descripcion, String imagen, double precio, int cantidad) {
+
+    public Producto(int id, String nombre, String descripcion, String imagen, double precio, int cantidad, Usuario usuario) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.imagen = imagen;
         this.precio = precio;
         this.cantidad = cantidad;
+        this.usuario = usuario;
     }
     //Getters and Setters
 
@@ -78,5 +88,13 @@ public class Producto {
 
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }
