@@ -19,7 +19,6 @@ public class Usuario {
     private List<Producto> productos;
     @OneToMany(mappedBy = "usuario")
     private List<Orden> ordenes;
-
     @Override
     public String toString() {
         return "Usuario{" +
