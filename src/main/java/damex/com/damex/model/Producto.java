@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String nombre;
     private String descripcion;
     private String imagen;
@@ -42,7 +42,7 @@ public class Producto {
     }
     //Getters and Setters
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
