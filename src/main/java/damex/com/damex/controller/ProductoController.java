@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -41,15 +42,6 @@ public class ProductoController {
         if(producto.getId()==null){
             String name=uploadFileService.saveImage(file);
             producto.setImagen(name);
-        }else{
-            if(file.isEmpty()){
-               Producto aux=new Producto();
-               aux=productoService.get(producto.getId()).get();
-               producto.setImagen(producto.getImagen());
-            }else{
-                String name=uploadFileService.saveImage(file);
-                producto.setImagen(name);
-            }
         }
         productoService.add(producto);
 
@@ -58,7 +50,6 @@ public class ProductoController {
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id,Model model){
         Producto producto= new Producto();
-
         Optional<Producto> optional = productoService.get(id);
         producto=optional.get();
         model.addAttribute("producto",producto);
@@ -68,13 +59,31 @@ public class ProductoController {
         return "productos/edit";
     }
     @PostMapping("/update")
-    public String update(Producto producto){
+    public String update(Producto producto,@RequestParam("img") MultipartFile file) throws IOException {
+        Producto aux=new Producto();
+        aux=productoService.get(producto.getId()).get();
+        if(file.isEmpty()){
+
+            producto.setImagen(aux.getImagen());
+        }else{
+
+            if(!aux.getImagen().equals("default.jpg")){
+                uploadFileService.deleteImage(aux.getImagen());
+            }
+            String name=uploadFileService.saveImage(file);
+            producto.setImagen(name);
+        }
+        producto.setUsuario(aux.getUsuario());
         productoService.update(producto);
         return "redirect:/productos";
     }
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Integer id){
-
+        Producto producto= new Producto();
+        producto=productoService.get(id).get();
+        if(!producto.getImagen().equals("default.jpg")){
+            uploadFileService.deleteImage(producto.getImagen());
+        }
         productoService.delete(id);
         return "redirect:/productos";
     }
