@@ -11,7 +11,7 @@ public class DetalleOrden {
     private String nombre;
     private double cantidad;
     private double precio;
-    private double tota;
+    private double total;
     @OneToOne
     private Orden orden;
 
@@ -20,12 +20,18 @@ public class DetalleOrden {
     //Constructors
 
     public DetalleOrden(){}
-    public DetalleOrden(int id, String nombre, double cantidad, double precio, double tota) {
+    public DetalleOrden(int id, String nombre, double cantidad, double precio, double total) {
         this.id = id;
         this.nombre = nombre;
         this.cantidad = cantidad;
         this.precio = precio;
-        this.tota = tota;
+        this.total = total;
+    }
+    public DetalleOrden(Producto producto,Integer cantidad){
+        this.cantidad=cantidad;
+        this.producto=producto;
+        this.precio=producto.getPrecio();
+        this.total =precio*cantidad;
     }
     //Getters and Setters
 
@@ -61,12 +67,12 @@ public class DetalleOrden {
         this.precio = precio;
     }
 
-    public double getTota() {
-        return tota;
+    public double getTotal() {
+        return total;
     }
 
-    public void setTota(double tota) {
-        this.tota = tota;
+    public void setTotal(double total) {
+        this.total = total;
     }
 
     public Orden getOrden() {
@@ -83,5 +89,18 @@ public class DetalleOrden {
 
     public void setProducto(Producto producto) {
         this.producto = producto;
+    }
+
+    @Override
+    public String toString() {
+        return "DetalleOrden{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", cantidad=" + cantidad +
+                ", precio=" + precio +
+                ", tota=" + total +
+                ", orden=" + orden +
+                ", producto=" + producto +
+                '}';
     }
 }

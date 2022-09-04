@@ -12,26 +12,26 @@
 <title>Spring eCommerce</title>
 
 
-<!-- Bootstrap core CSS -->
+
 <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}"
 	rel="stylesheet">
 
-<!-- Custom styles for this template -->
+
 <link th:href="@{/css/heroic-features.css}" rel="stylesheet">
 
 </head>
 
 <body>
 
-	<!-- Navigation -->
+
 	<div th:include="usuario/template_usuario.html::header" th:if="${sesion==null}">	
 	</div>
 	
 	<div th:include="usuario/template_usuario.html::header-user" th:unless="${sesion==null}"> </div>
 
-	<!-- Page Content -->
+
 	<div class="container">
-		<!-- Page Heading/Breadcrumbs -->
+
 		<h1 class="mt-4 mb-3">
 			Spring eCommerce <small>Carrito</small>
 		</h1>
@@ -41,7 +41,6 @@
 			<li class="breadcrumb-item active">Carrito</li>
 		</ol>
 
-		<!-- Blog Post -->
 		<div class="card mb-4">
 			<div class="card-body">
 				<div class="row">
@@ -82,12 +81,10 @@
 			</div>
 		</div>
 	</div>
-	<!-- /.container -->
 
-	<!-- Footer -->
 	<div th:include="usuario/template_usuario.html::footer"></div>
 
-	<!-- Bootstrap core JavaScript -->
+
 	<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
 	<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
