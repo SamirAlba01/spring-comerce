@@ -28,6 +28,7 @@ public class DetalleOrden {
         this.total = total;
     }
     public DetalleOrden(Producto producto,Integer cantidad){
+        this.nombre=producto.getNombre();
         this.cantidad=cantidad;
         this.producto=producto;
         this.precio=producto.getPrecio();
