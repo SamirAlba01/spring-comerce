@@ -4,6 +4,8 @@ import damex.com.damex.model.DetalleOrden;
 import damex.com.damex.model.Orden;
 import damex.com.damex.model.Producto;
 import damex.com.damex.model.Usuario;
+import damex.com.damex.service.DetalleOrdenService;
+import damex.com.damex.service.OrdenService;
 import damex.com.damex.service.ProductoService;
 import damex.com.damex.service.UsuarioService;
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -23,6 +26,12 @@ public class HomeController {
     private ProductoService productoService;
     @Autowired
     private UsuarioService usuarioService;
+    @Autowired
+    private OrdenService ordenService;
+    @Autowired
+    private DetalleOrdenService detalleOrdenService;
+
+
     private List<DetalleOrden> detalles= new ArrayList<>();
     private Orden orden= new Orden();
 
@@ -81,6 +90,30 @@ public class HomeController {
     public void recalcularTotal(){
         double precioTotal=detalles.stream().mapToDouble(DetalleOrden::getTotal).sum();
         orden.setTotal(precioTotal);
+    }
+    @GetMapping("/saveOrder")
+    public String saveOrder(){
+
+        orden.setFechaCreacion(new Date());
+        orden.setNumero(ordenService.generarNumeroOrden());
+        orden.setUsuario(usuarioService.findById(1).get());
+        ordenService.save(orden);
+
+        for(DetalleOrden detalleOrden:detalles){
+            detalleOrden.setOrden(orden);
+            detalleOrdenService.save(detalleOrden);
+        }
+        //Limpiar lista
+        orden= new Orden();
+        detalles.clear();
+        return "redirect:/";
+    }
+    @PostMapping("/search")
+    public String searchProduct(@RequestParam String nombre,Model model){
+
+        List<Producto> productos=productoService.findByName(nombre);
+        model.addAttribute("productos",productos);
+        return "usuario/home";
     }
 
 }

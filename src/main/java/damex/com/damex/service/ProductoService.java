@@ -10,5 +10,7 @@ public interface ProductoService {
     Optional<Producto> get(Integer id);
     void update(Producto producto);
     void delete(Integer id);
-    public List<Producto> findAll();
+    List<Producto> findAll();
+    List<Producto> findByName(String name);
+
 }

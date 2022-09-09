@@ -36,4 +36,9 @@ public class ProductoServiceImpl implements ProductoService{
     public List<Producto> findAll() {
         return productoRepository.findAll();
     }
+
+    @Override
+    public List<Producto> findByName(String nombre) {
+        return  productoRepository.findAllByNombre(nombre);
+    }
 }
