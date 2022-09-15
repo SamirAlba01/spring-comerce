@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,8 +39,10 @@ public class HomeController {
 
 
     @GetMapping("")
-    public String home(Model model){
+    public String home(Model model, HttpSession session){
+
         model.addAttribute("productos",productoService.findAll());
+        model.addAttribute("sesion",session.getAttribute("idUsuario"));
         return "usuario/home";
     }
     @GetMapping("productohome/{id}")
@@ -49,13 +53,13 @@ public class HomeController {
         return "usuario/productohome";
     }
     @PostMapping("/cart")
-    public String addCart(@RequestParam Integer id,@RequestParam Integer cantidad,Model model){
+    public String addCart(@RequestParam Integer id,@RequestParam Integer cantidad,Model model,HttpSession session){
 
         Producto producto=productoService.get(id).get();
         DetalleOrden detalleOrden= new DetalleOrden(producto,cantidad);
         detalles.add(detalleOrden);
         recalcularTotal();
-        agregarDatosModelo(model);
+        agregarDatosModelo(model,session);
         REGISTRO.info("El detalle de la orden es:{}",detalleOrden);
 
         return "usuario/carrito";
@@ -71,19 +75,21 @@ public class HomeController {
         return "usuario/carrito";
     }
     @GetMapping("/getCart")
-    public String getCart(Model model){
-        agregarDatosModelo(model);
+    public String getCart(Model model,HttpSession session){
+        agregarDatosModelo(model,session);
         return "usuario/carrito";
     }
     @GetMapping("/order")
-    public String order(Model model){
-        Usuario usuario=usuarioService.findById(1).get();
+    public String order(Model model,HttpSession session){
+        Integer id=Integer.parseInt(session.getAttribute("idUsuario").toString());
+        Usuario usuario=usuarioService.findById(id).get();
         model.addAttribute("usuario",usuario);
-        agregarDatosModelo(model);
+        agregarDatosModelo(model,session);
         return "usuario/resumenorden";
     }
 
-    public void agregarDatosModelo(Model model){
+    public void agregarDatosModelo(Model model,HttpSession session){
+        model.addAttribute("session",session.getAttribute("idUsuario"));
         model.addAttribute("cart",detalles);
         model.addAttribute("orden",orden);
     }
@@ -92,11 +98,11 @@ public class HomeController {
         orden.setTotal(precioTotal);
     }
     @GetMapping("/saveOrder")
-    public String saveOrder(){
-
+    public String saveOrder(HttpSession session){
+        Integer id=Integer.parseInt(session.getAttribute("idUsuario").toString());
         orden.setFechaCreacion(new Date());
         orden.setNumero(ordenService.generarNumeroOrden());
-        orden.setUsuario(usuarioService.findById(1).get());
+        orden.setUsuario(usuarioService.findById(id).get());
         ordenService.save(orden);
 
         for(DetalleOrden detalleOrden:detalles){
@@ -115,5 +121,6 @@ public class HomeController {
         model.addAttribute("productos",productos);
         return "usuario/home";
     }
+
 
 }

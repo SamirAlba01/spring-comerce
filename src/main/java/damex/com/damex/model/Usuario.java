@@ -1,59 +1,51 @@
 package damex.com.damex.model;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name= "Usuarios")
-public class Usuario {
+@Table(name= "usuarios")
+public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int id_user;
     private String nombre;
-    private String username;
     private String email;
     private String direccion;
     private String telefono;
-    private String tipo;
     private String password;
     @OneToMany(mappedBy = "usuario")
     private List<Producto> productos;
     @OneToMany(mappedBy = "usuario")
     private List<Orden> ordenes;
-    @Override
-    public String toString() {
-        return "Usuario{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", direccion='" + direccion + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", tipo='" + tipo + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
+    @ManyToMany
+    @JoinTable(name = "TB_RULES",joinColumns = @JoinColumn(name = "id_user"),inverseJoinColumns = @JoinColumn(name = "id_rol"))
+    private List<Rol> roles;
+
 
     //Constructors
     public Usuario(){}
 
-    public Usuario(int id, String nombre, String username, String email, String direccion, String telefono, String tipo, String password) {
-        this.id = id;
+    public Usuario(int id_user, String nombre, String email, String direccion, String telefono, String tipo, String password) {
+        this.id_user = id_user;
         this.nombre = nombre;
-        this.username = username;
+
         this.email = email;
         this.direccion = direccion;
         this.telefono = telefono;
-        this.tipo = tipo;
         this.password = password;
     }
 
     //Getter and Setters
-    public int getId() {
-        return id;
+    public int getId_user() {
+        return id_user;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId_user(int id) {
+        this.id_user = id;
     }
 
     public String getNombre() {
@@ -63,15 +55,6 @@ public class Usuario {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -95,17 +78,13 @@ public class Usuario {
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
     public void setPassword(String password) {
@@ -118,5 +97,38 @@ public class Usuario {
 
     public void setProductos(List<Producto> productos) {
         this.productos = productos;
+    }
+
+    public List<Rol> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Rol> roles) {
+        this.roles = roles;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

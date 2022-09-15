@@ -4,6 +4,7 @@ import damex.com.damex.model.Producto;
 import damex.com.damex.model.Usuario;
 import damex.com.damex.service.ProductoService;
 import damex.com.damex.service.UploadFileService;
+import damex.com.damex.service.UsuarioService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
@@ -24,6 +26,8 @@ public class ProductoController {
     private ProductoService productoService;
     @Autowired
     private UploadFileService uploadFileService;
+    @Autowired
+    private UsuarioService usuarioService;
 
     @GetMapping("")
     public String show(Model model){
@@ -35,9 +39,9 @@ public class ProductoController {
         return "productos/create";
     }
     @PostMapping("/save")
-    public String save(Producto producto,@RequestParam("img") MultipartFile file) throws IOException {
-        REGISTRO.info("Este el objeto producto {}",producto);
-        Usuario user= new Usuario(1,"","","","","","","");
+    public String save(Producto producto, @RequestParam("img") MultipartFile file, HttpSession session) throws IOException {
+        Integer id=Integer.parseInt(session.getAttribute("idUsuario").toString());
+        Usuario user= usuarioService.findById(id).get();
         producto.setUsuario(user);
         if(producto.getId()==null){
             String name=uploadFileService.saveImage(file);
